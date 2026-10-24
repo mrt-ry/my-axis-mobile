@@ -1,0 +1,3 @@
+[submodule "my-axis-mobile"]
+	path = my-axis-mobile
+	url = https://github.com/mrt-ry/my-axis-mobile.git
