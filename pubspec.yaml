@@ -87,3 +87,20 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: NotoSansJP
+      fonts:
+        - asset: assets/fonts/NotoSansJP-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansJP-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansJP-Bold.ttf
+          weight: 700
+    - family: ZenMaruGothic
+      fonts:
+        - asset: assets/fonts/ZenMaruGothic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/ZenMaruGothic-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ZenMaruGothic-Bold.ttf
+          weight: 700
