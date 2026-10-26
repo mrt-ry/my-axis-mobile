@@ -21,4 +21,7 @@ abstract final class AppColors {
   static const Color error = Color(0xFFE57373);
   static const Color onError = Color(0xFFFFFFFF);
   static const Color disabled = Color(0xFFCBD1D8);
+
+  // 部品
+  static const Color border = Color(0xFFE3E7EC);
 }
