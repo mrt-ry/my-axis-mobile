@@ -20,6 +20,7 @@ abstract final class AppColors {
 
   // 文字
   static const Color textPrimary = Color(0xFF333B36);
+  static const Color textHint = Color(0xFF8A94A0);
 
   // 状態
   static const Color success = Color(0xFFA8C7A0);
