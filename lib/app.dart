@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/theme_preview_screen.dart';
+import 'screens/root_screen.dart';
 import 'theme/app_theme.dart';
 
 class App extends StatelessWidget {
@@ -11,7 +11,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'My Axis',
       theme: AppTheme.light,
-      home: const ThemePreviewScreen(),
+      home: const RootScreen(),
     );
   }
 }

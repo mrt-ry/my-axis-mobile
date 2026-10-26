@@ -5,4 +5,5 @@ abstract final class AppRadius {
   static const double button = 12.0;
   static const double card = 16.0;
   static const double modal = 20.0;
+  static const double navBar = 28.0;
 }

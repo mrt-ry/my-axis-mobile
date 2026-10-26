@@ -12,6 +12,7 @@ abstract final class AppColors {
   static const Color secondary = Color(0xFFA8C7A0);
   static const Color onSecondary = Color(0xFF333B36);
   static const Color accent = Color(0xFFF5C76B);
+  static const Color navSelected = Color(0xFFE6EEF6);
 
   // 背景・面
   static const Color background = Color(0xFFF7F8FA);
@@ -20,6 +21,7 @@ abstract final class AppColors {
 
   // 文字
   static const Color textPrimary = Color(0xFF333B36);
+  static const Color textSecondary = Color(0xFF5F6B78);
   static const Color textHint = Color(0xFF8A94A0);
 
   // 状態
@@ -32,4 +34,5 @@ abstract final class AppColors {
 
   // 線
   static const Color border = Color(0xFFE3E7EC);
+  static const Color shadow = Color(0x14000000);
 }
