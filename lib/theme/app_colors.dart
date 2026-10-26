@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 abstract final class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFF789EC8);
+  static const Color primary = Color(0xFF4E6F96);
   static const Color onPrimary = Color(0xFFFFFFFF);
+  static const Color primaryLight = Color(0xFF789EC8);
   static const Color secondary = Color(0xFFA8C7A0);
   static const Color onSecondary = Color(0xFF333B36);
   static const Color accent = Color(0xFFF5C76B);
