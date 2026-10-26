@@ -6,21 +6,21 @@ abstract final class AppTypography {
   static const String _notoSansJP = 'NotoSansJP';
   static const String _zenMaruGothic = 'ZenMaruGothic';
 
-  static const TextStyle headingLarge = TextStyle(
+  static const TextStyle headlineLarge = TextStyle(
     fontFamily: _notoSansJP,
     fontSize: 24,
     fontWeight: FontWeight.w700,
     height: 1.4,
   );
 
-  static const TextStyle headingMedium = TextStyle(
+  static const TextStyle headlineMedium = TextStyle(
     fontFamily: _notoSansJP,
     fontSize: 20,
     fontWeight: FontWeight.w700,
     height: 1.4,
   );
 
-  static const TextStyle headingSmall = TextStyle(
+  static const TextStyle headlineSmall = TextStyle(
     fontFamily: _notoSansJP,
     fontSize: 18,
     fontWeight: FontWeight.w700,
@@ -45,21 +45,14 @@ abstract final class AppTypography {
     fontFamily: _notoSansJP,
     fontSize: 12,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.5,
   );
 
-  static const TextStyle label = TextStyle(
+  static const TextStyle labelMedium = TextStyle(
     fontFamily: _notoSansJP,
     fontSize: 14,
     fontWeight: FontWeight.w500,
     height: 1.4,
-  );
-
-  static const TextStyle caption = TextStyle(
-    fontFamily: _notoSansJP,
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    height: 1.5,
   );
 
   static const TextStyle emotionalTitle = TextStyle(
