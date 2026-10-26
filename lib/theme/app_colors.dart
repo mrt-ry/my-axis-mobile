@@ -35,4 +35,10 @@ abstract final class AppColors {
   // 線
   static const Color border = Color(0xFFE3E7EC);
   static const Color shadow = Color(0x14000000);
+
+  // 今日のことば
+  static const Color messageBackground = Color(0xFFFBF6EC);
+  static const Color messageText = Color(0xFF3D3A33);
+  static const Color messageSecondary = Color(0xFF8A7A5C);
+  static const Color messageRule = Color(0xFFC9B48A);
 }
