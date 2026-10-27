@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_axis_mobile/screens/home/widgets/daily_message_section.dart';
 
-import '../../screens/home/widgets/home_date_header.dart';
-import '../../screens/home/widgets/week_strip.dart';
+import 'widgets/home_date_header.dart';
+import 'widgets/week_strip.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
 
@@ -43,6 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedDate: _selectedDate,
               today: _today,
               onSelect: (date) => setState(() => _selectedDate = date),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            const DailyMessageSection(
+              message: '急がなくていい。\n今日の自分に、正直でいられたら。',
+              author: '作者名',
             ),
           ],
         ),
