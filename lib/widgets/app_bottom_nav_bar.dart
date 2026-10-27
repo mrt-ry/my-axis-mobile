@@ -84,7 +84,7 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primaryPressed : AppColors.textSecondary;
+    final color = selected ? AppColors.onPrimaryTint : AppColors.textSecondary;
 
     return Semantics(
       button: true,
