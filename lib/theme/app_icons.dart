@@ -8,4 +8,6 @@ abstract final class AppIcons {
   static const IconData axis = Symbols.explore_rounded;
   static const IconData journey = Symbols.footprint_rounded;
   static const IconData settings = Symbols.settings_rounded;
+  static const IconData check = Symbols.check_rounded;
+  static const IconData chevronRight = Symbols.chevron_right_rounded;
 }
