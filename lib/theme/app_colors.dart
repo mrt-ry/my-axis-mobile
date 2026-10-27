@@ -9,6 +9,7 @@ abstract final class AppColors {
   static const Color primaryLight = Color(0xFF789EC8);
   static const Color primaryPressed = Color(0xFF3B5878);
   static const Color primaryTint = Color(0xFFDCE6F0);
+  static const Color onPrimaryTint = Color(0xFF3B5878);
   static const Color secondary = Color(0xFFA8C7A0);
   static const Color onSecondary = Color(0xFF333B36);
   static const Color accent = Color(0xFFF5C76B);
@@ -35,6 +36,10 @@ abstract final class AppColors {
   // 線
   static const Color border = Color(0xFFE3E7EC);
   static const Color shadow = Color(0x14000000);
+
+  // カレンダー
+  static const Color saturday = Color(0xFF3B6FB6);
+  static const Color sunday = Color(0xFFC9403A);
 
   // 今日のことば
   static const Color messageBackground = Color(0xFFFBF6EC);
