@@ -5,7 +5,7 @@ abstract final class DateLabels {
 
   static String weekday(DateTime date) => _weekdays[date.weekday - 1];
 
-  static String weekdayLong(DateTime date) => '${weekday(date)}曜日';
+  static String weekdayParen(DateTime date) => '(${weekday(date)})';
 
   static String monthDay(DateTime date) => '${date.month}月${date.day}日';
 }
