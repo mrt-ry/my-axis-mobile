@@ -26,12 +26,10 @@ class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      minimum: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenHorizontalPadding,
-          0,
-          AppSpacing.screenHorizontalPadding,
-          AppSpacing.md,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.screenHorizontalPadding,
         ),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.sm),
