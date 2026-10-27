@@ -42,8 +42,7 @@ abstract final class AppColors {
   static const Color sunday = Color(0xFFC9403A);
 
   // 今日のことば
-  static const Color messageBackground = Color(0xFFFBF6EC);
-  static const Color messageText = Color(0xFF3D3A33);
-  static const Color messageSecondary = Color(0xFF8A7A5C);
-  static const Color messageRule = Color(0xFFC9B48A);
+  static const Color messageBackground = Color(0xFFEDF2F8);
+  static const Color messageText = Color(0xFF333B36);
+  static const Color messageSecondary = Color(0xFF4F5B68);
 }
