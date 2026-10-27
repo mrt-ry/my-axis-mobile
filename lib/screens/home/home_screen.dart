@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:my_axis_mobile/screens/home/widgets/daily_message_section.dart';
 
-import 'widgets/home_date_header.dart';
-import 'widgets/week_strip.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/section_title.dart';
+import 'widgets/daily_message_section.dart';
+import 'widgets/home_date_header.dart';
+import 'widgets/step_item.dart';
+import 'widgets/week_strip.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.onOpenAxis});
+
+  final VoidCallback onOpenAxis;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -25,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       lastDate: DateRules.lastSelectableDate(_today),
     );
 
-    // カレンダー選択のキャンセル、カレンダーがない場合は中止
+    // カレンダー選択のキャンセル、画面がすでに閉じられている場合は中止
     if (picked == null || !mounted) return;
     setState(() {
       _selectedDate = picked;
@@ -50,6 +57,61 @@ class _HomeScreenState extends State<HomeScreen> {
               message: '急がなくていい。\n今日の自分に、正直でいられたら。',
               author: '作者名',
             ),
+            const SizedBox(height: AppSpacing.xl),
+            const SectionTitle('今日のステップ'),
+            const SizedBox(height: AppSpacing.md),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenHorizontalPadding,
+              ),
+              child: Column(
+                children: [
+                  StepItem(
+                    stepNumber: 1,
+                    title: '次の一歩',
+                    status: StepStatus.current,
+                    isFirst: true,
+                    description: '理想の自分に近づくために、\n小さな一歩からやることを決めよう',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: widget.onOpenAxis,
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            minimumSize: const Size(0, 32),
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('自分の軸を確認する'),
+                              Icon(AppIcons.chevronRight, size: 20),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        AppButton(label: '次の一歩を決める', onPressed: () {}),
+                      ],
+                    ),
+                  ),
+                  StepItem(
+                    stepNumber: 2,
+                    title: '振り返り',
+                    status: StepStatus.pending,
+                    isLast: true,
+                    description: '自分を振り返って、\n自分の軸を少しずつ育てよう',
+                    child: AppButton(
+                      label: '振り返る',
+                      variant: AppButtonVariant.secondary,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
