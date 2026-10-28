@@ -45,7 +45,16 @@ class SelectedValues extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [DailyActions, Ideals, SelectedValues])
+// アプリ設定
+class AppSettings extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+@DriftDatabase(tables: [DailyActions, Ideals, SelectedValues, AppSettings])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'my_axis'));
 
