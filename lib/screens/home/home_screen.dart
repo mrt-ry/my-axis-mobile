@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DateTime _today = DateTime.now();
+  final DateTime _today = DateRules.today();
   late DateTime _selectedDate = _today;
 
   Future<void> _pickDate() async {

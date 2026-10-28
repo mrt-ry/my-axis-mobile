@@ -8,4 +8,6 @@ abstract final class DateRules {
 
   static DateTime lastSelectableDate(DateTime today) =>
       DateTime(today.year, today.month, today.day + 1);
+
+  static DateTime today() => dateOnly(DateTime.now());
 }
