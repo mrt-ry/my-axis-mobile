@@ -11,6 +11,7 @@ class VisionRepository {
 
   static const maxIdeals = 10;
   static const maxValues = 10;
+  static const maxIdealLength = 100;
 
   // ---------- 理想の状態 ----------
 
@@ -24,7 +25,7 @@ class VisionRepository {
   // 追加
   Future<bool> addIdeal(String content) async {
     final text = content.trim();
-    if (text.isEmpty) return false;
+    if (text.isEmpty || text.length > maxIdealLength) return false;
 
     final current = await _db.select(_db.ideals).get();
     if (current.length >= maxIdeals) return false;
@@ -42,7 +43,7 @@ class VisionRepository {
   // 更新
   Future<bool> updateIdeal(String id, String content) async {
     final text = content.trim();
-    if (text.isEmpty) return false;
+    if (text.isEmpty || text.length > maxIdealLength) return false;
 
     await (_db.update(_db.ideals)..where((t) => t.id.equals(id))).write(
       IdealsCompanion(content: Value(text), updatedAt: Value(DateTime.now())),
