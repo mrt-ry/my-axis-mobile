@@ -13,17 +13,19 @@ class RootScreen extends StatefulWidget {
     super.key,
     required this.visionRepository,
     required this.actionRepository,
+    this.initialIndex = 0,
   });
 
   final VisionRepository visionRepository;
   final ActionRepository actionRepository;
+  final int initialIndex;
 
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
 
 class _RootScreenState extends State<RootScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex = widget.initialIndex;
   static const _axisTabIndex = 1;
 
   @override
