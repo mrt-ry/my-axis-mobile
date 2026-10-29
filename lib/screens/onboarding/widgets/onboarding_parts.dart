@@ -87,7 +87,7 @@ class OnboardingFeatureList extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < features.length; i++)
-            _FeatureRow(number: i + i, feature: features[i]),
+            _FeatureRow(number: i + 1, feature: features[i]),
         ],
       ),
     );
@@ -128,7 +128,7 @@ class _FeatureRow extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   feature.description,
-                  style: AppTypography.labelMedium.copyWith(
+                  style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
