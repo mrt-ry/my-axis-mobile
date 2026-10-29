@@ -9,6 +9,10 @@ class ActionRepository {
 
   final AppDatabase _db;
 
+  static const maxActionsPerDay = 10;
+  static const maxActionLength = 50;
+  static const maxReasonLength = 100;
+
   // 登録順で一覧取得
   Stream<List<DailyAction>> watchActionsByDate(DateTime date) {
     final day = DateRules.dateOnly(date);
@@ -25,14 +29,20 @@ class ActionRepository {
     String reason = '',
   }) async {
     final text = action.trim();
-    if (text.isEmpty) return false;
+    if (!_isValid(text, reason)) return false;
+
+    final day = DateRules.dateOnly(date);
+    final existing = await (_db.select(
+      _db.dailyActions,
+    )..where((t) => t.targetDate.equals(day))).get();
+    if (existing.length >= maxActionsPerDay) return false;
 
     final now = DateTime.now();
     await _db
         .into(_db.dailyActions)
         .insert(
           DailyActionsCompanion.insert(
-            targetDate: DateRules.dateOnly(date),
+            targetDate: day,
             action: text,
             reason: Value(reason.trim()),
             createdAt: now,
@@ -46,7 +56,7 @@ class ActionRepository {
   // 行動と理由の更新
   Future<bool> updateAction(String id, String action, String reason) async {
     final text = action.trim();
-    if (text.isEmpty) return false;
+    if (!_isValid(text, reason)) return false;
 
     await (_db.update(_db.dailyActions)..where((t) => t.id.equals(id))).write(
       DailyActionsCompanion(
@@ -77,5 +87,11 @@ class ActionRepository {
   // 削除
   Future<void> deleteAction(String id) async {
     await (_db.delete(_db.dailyActions)..where((t) => t.id.equals(id))).go();
+  }
+
+  bool _isValid(String action, String reason) {
+    return action.isNotEmpty &&
+        action.length <= maxActionLength &&
+        reason.trim().length <= maxReasonLength;
   }
 }
