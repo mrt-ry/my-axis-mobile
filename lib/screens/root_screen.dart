@@ -32,7 +32,7 @@ class _RootScreenState extends State<RootScreen> {
       HomeScreen(
         onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
       ),
-      AxisScreen(),
+      AxisScreen(repository: widget.visionRepository),
       JourneyScreen(),
       SettingsScreen(),
     ];
