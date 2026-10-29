@@ -31,6 +31,7 @@ abstract final class AppColors {
   static const Color warning = Color(0xFFF5C76B);
   static const Color error = Color(0xFFE57373);
   static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorText = Color(0xFFB3392F);
   static const Color disabled = Color(0xFFCBD1D8);
 
   // 線

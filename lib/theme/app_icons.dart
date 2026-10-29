@@ -13,4 +13,5 @@ abstract final class AppIcons {
   static const IconData edit = Symbols.edit_rounded;
   static const IconData editNote = Symbols.edit_note_rounded;
   static const IconData close = Symbols.close_rounded;
+  static const IconData delete = Symbols.delete_rounded;
 }
