@@ -50,7 +50,7 @@ class OnboardingPage extends StatelessWidget {
                   child: Text(
                     '${_twoDigits(pageNumber)} / ${_twoDigits(pageCount)}',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textHint,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ),
