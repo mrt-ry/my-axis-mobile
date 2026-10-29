@@ -48,7 +48,7 @@ class AppButton extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label),
+        Flexible(child: Text(label, textAlign: TextAlign.center)),
         if (trailingIcon != null) ...[
           const SizedBox(width: AppSpacing.sm),
           Icon(trailingIcon, size: 20),
