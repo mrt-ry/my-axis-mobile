@@ -32,6 +32,7 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     final screens = [
       HomeScreen(
+        actionRepository: widget.actionRepository,
         onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
       ),
       AxisScreen(repository: widget.visionRepository),

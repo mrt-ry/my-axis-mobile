@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../repositories/action_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/section_title.dart';
+import '../next_step/next_step_screen.dart';
 import 'widgets/daily_message_section.dart';
 import 'widgets/home_date_header.dart';
 import 'widgets/step_item.dart';
 import 'widgets/week_strip.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.onOpenAxis});
+  const HomeScreen({
+    super.key,
+    required this.actionRepository,
+    required this.onOpenAxis,
+  });
 
+  final ActionRepository actionRepository;
   final VoidCallback onOpenAxis;
 
   @override
@@ -37,6 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedDate = picked;
     });
+  }
+
+  void _openNextStep() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => NextStepScreen(
+          actionRepository: widget.actionRepository,
+          date: _selectedDate,
+        ),
+      ),
+    );
   }
 
   @override
@@ -92,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
-                        AppButton(label: '次の一歩を決める', onPressed: () {}),
+                        AppButton(label: '次の一歩を決める', onPressed: _openNextStep),
                       ],
                     ),
                   ),
