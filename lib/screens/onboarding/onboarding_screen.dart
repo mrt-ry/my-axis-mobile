@@ -4,9 +4,11 @@ import '../../repositories/action_repository.dart';
 import '../../repositories/settings_repository.dart';
 import '../../repositories/vision_repository.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_text_button.dart';
 import '../root_screen.dart';
 import 'widgets/onboarding_page.dart';
 import 'widgets/onboarding_parts.dart';
@@ -186,9 +188,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _currentPage > 0
-            ? _TextLink(label: '戻る', onPressed: _goBack)
+            ? AppTextButton(
+                label: '戻る',
+                leadingIcon: AppIcons.chevronLeft,
+                onPressed: _goBack,
+              )
             : const SizedBox.shrink(),
-        _TextLink(label: '次へ', onPressed: _goNext),
+        AppTextButton(
+          label: '次へ',
+          trailingIcon: AppIcons.chevronRight,
+          onPressed: _goNext,
+        ),
       ],
     );
   }
@@ -206,36 +216,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _TextLink(label: '戻る', onPressed: _isSaving ? null : _goBack),
-            _TextLink(
+            AppTextButton(
+              label: '戻る',
+              leadingIcon: AppIcons.chevronLeft,
+              onPressed: _isSaving ? null : _goBack,
+            ),
+            AppTextButton(
               label: 'あとで設定する',
               onPressed: _isSaving ? null : () => _finish(_homeTabIndex),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class _TextLink extends StatelessWidget {
-  const _TextLink({required this.label, this.onPressed});
-
-  final String label;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        minimumSize: const Size(48, 48),
-        foregroundColor: AppColors.primary,
-        textStyle: AppTypography.labelMedium.copyWith(
-          decoration: TextDecoration.underline,
-        ),
-      ),
-      child: Text(label),
     );
   }
 }
