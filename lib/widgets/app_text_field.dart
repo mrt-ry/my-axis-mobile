@@ -13,6 +13,7 @@ class AppTextField extends StatelessWidget {
     this.errorText,
     this.maxLines = 1,
     this.minLines,
+    this.maxLength,
     this.enabled = true,
     this.onChanged,
   });
@@ -22,6 +23,7 @@ class AppTextField extends StatelessWidget {
   final String? errorText;
   final int? maxLines;
   final int? minLines;
+  final int? maxLength;
   final bool enabled;
   final ValueChanged<String>? onChanged;
 
@@ -32,6 +34,7 @@ class AppTextField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       minLines: minLines,
+      maxLength: maxLength,
       onChanged: onChanged,
       style: AppTypography.bodyLarge,
       decoration: InputDecoration(
