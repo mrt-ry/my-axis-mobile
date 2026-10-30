@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../data/database/app_database.dart';
 import '../../repositories/action_repository.dart';
+import '../../repositories/vision_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
@@ -9,6 +12,7 @@ import '../../theme/app_typography.dart';
 import '../../utils/date_labels.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_button.dart';
+import 'widgets/ideal_quote.dart';
 import 'widgets/next_step_edit_sheet.dart';
 import 'widgets/next_step_row.dart';
 
@@ -16,11 +20,15 @@ class NextStepScreen extends StatefulWidget {
   const NextStepScreen({
     super.key,
     required this.actionRepository,
+    required this.visionRepository,
     required this.date,
+    required this.onOpenAxis,
   });
 
   final ActionRepository actionRepository;
+  final VisionRepository visionRepository;
   final DateTime date;
+  final VoidCallback onOpenAxis;
 
   @override
   State<NextStepScreen> createState() => _NextStepScreenState();
@@ -29,6 +37,18 @@ class NextStepScreen extends StatefulWidget {
 class _NextStepScreenState extends State<NextStepScreen> {
   late final Stream<List<DailyAction>> _actionStream = widget.actionRepository
       .watchActionsByDate(widget.date);
+  late final Future<String?> _idealText = _pickIdeal();
+
+  Future<String?> _pickIdeal() async {
+    final ideals = await widget.visionRepository.watchIdeals().first;
+    if (ideals.isEmpty) return null;
+    return ideals[Random().nextInt(ideals.length)].content;
+  }
+
+  void _openAxis() {
+    Navigator.of(context).pop();
+    widget.onOpenAxis();
+  }
 
   void _addAction(int currentCount) {
     if (currentCount >= ActionRepository.maxActionsPerDay) {
@@ -86,11 +106,33 @@ class _NextStepScreenState extends State<NextStepScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.xl),
+            _buildIdeal(),
+            AppTextButton(
+              label: '自分の軸をすべて見る',
+              trailingIcon: AppIcons.chevronRight,
+              onPressed: _openAxis,
+            ),
             const SizedBox(height: AppSpacing.xxl),
             _buildActions(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildIdeal() {
+    return FutureBuilder<String?>(
+      future: _idealText,
+      builder: (context, snapshot) {
+        final text = snapshot.data;
+        if (text == null) return const SizedBox.shrink();
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+          child: IdealQuote(text: text),
+        );
+      },
     );
   }
 

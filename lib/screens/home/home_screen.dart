@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_axis_mobile/repositories/vision_repository.dart';
 
 import '../../repositories/action_repository.dart';
+import '../../repositories/vision_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
@@ -17,10 +19,12 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.actionRepository,
+    required this.visionRepository,
     required this.onOpenAxis,
   });
 
   final ActionRepository actionRepository;
+  final VisionRepository visionRepository;
   final VoidCallback onOpenAxis;
 
   @override
@@ -51,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (context) => NextStepScreen(
           actionRepository: widget.actionRepository,
+          visionRepository: widget.visionRepository,
           date: _selectedDate,
+          onOpenAxis: widget.onOpenAxis,
         ),
       ),
     );
