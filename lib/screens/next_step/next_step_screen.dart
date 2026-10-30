@@ -46,7 +46,6 @@ class _NextStepScreenState extends State<NextStepScreen> {
   }
 
   void _openAxis() {
-    Navigator.of(context).pop();
     widget.onOpenAxis();
   }
 
