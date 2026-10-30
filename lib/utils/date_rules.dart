@@ -10,4 +10,10 @@ abstract final class DateRules {
       DateTime(today.year, today.month, today.day + 1);
 
   static DateTime today() => dateOnly(DateTime.now());
+
+  static int daysBetween(DateTime from, DateTime to) {
+    final start = DateTime.utc(from.year, from.month, from.day);
+    final end = DateTime.utc(to.year, to.month, to.day);
+    return end.difference(start).inDays;
+  }
 }

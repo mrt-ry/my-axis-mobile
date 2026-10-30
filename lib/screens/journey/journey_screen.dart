@@ -5,6 +5,7 @@ import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
 import 'widgets/done_steps_section.dart';
 import 'widgets/emotion_trend_section.dart';
+import 'widgets/past_reflection_section.dart';
 
 class JourneyScreen extends StatelessWidget {
   const JourneyScreen({super.key});
@@ -34,6 +35,7 @@ class JourneyScreen extends StatelessWidget {
             const EmotionTrendSection(),
             const SizedBox(height: AppSpacing.xxl),
             const DoneStepsSection(),
+            const PastReflectionSection(),
           ],
         ),
       ),
