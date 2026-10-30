@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/database/app_database.dart';
-import '../../repositories/action_repository.dart';
-import '../../repositories/vision_repository.dart';
+import '../../providers/action_providers.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
@@ -16,33 +15,22 @@ import 'widgets/next_step_summary.dart';
 import 'widgets/step_item.dart';
 import 'widgets/week_strip.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    super.key,
-    required this.actionRepository,
-    required this.visionRepository,
-    required this.onOpenAxis,
-  });
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key, required this.onOpenAxis});
 
-  final ActionRepository actionRepository;
-  final VisionRepository visionRepository;
   final VoidCallback onOpenAxis;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final DateTime _today = DateRules.today();
   late DateTime _selectedDate = _today;
-
-  late Stream<List<DailyAction>> _actionStream = widget.actionRepository
-      .watchActionsByDate(_selectedDate);
 
   void _selectDate(DateTime date) {
     setState(() {
       _selectedDate = date;
-      _actionStream = widget.actionRepository.watchActionsByDate(date);
     });
   }
 
@@ -103,61 +91,59 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSteps() {
-    return StreamBuilder<List<DailyAction>>(
-      stream: _actionStream,
-      builder: (context, snapshot) {
-        final actions = snapshot.data;
-        if (actions == null) return const SizedBox.shrink();
+    final actions = switch (ref.watch(actionsByDateProvider(_selectedDate))) {
+      AsyncData(:final value) => value,
+      _ => null, // 読み込み中・エラーの時は何も出さない
+    };
+    if (actions == null) return const SizedBox.shrink();
 
-        final decided = actions.isNotEmpty; // 1つ以上、次の一歩を決めたらSTEP1が完了
+    final decided = actions.isNotEmpty; // 1つ以上、次の一歩を決めたらSTEP1が完了
 
-        return Column(
-          children: [
-            StepItem(
-              stepNumber: 1,
-              title: '次の一歩',
-              status: decided ? StepStatus.done : StepStatus.current,
-              isFirst: true,
-              description: decided
-                  ? '${actions.length}個の一歩を、自分で決めました。'
-                  : '理想の自分に近づくために、\n小さな一歩からやることを決めよう',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (decided)
-                    NextStepSummary(actions: actions)
-                  else
-                    AppTextButton(
-                      label: '自分の軸を確認する',
-                      trailingIcon: AppIcons.chevronRight,
-                      onPressed: widget.onOpenAxis,
-                    ),
-                  const SizedBox(height: AppSpacing.sm),
-                  AppButton(
-                    label: decided ? '次の一歩を確認する' : '次の一歩を決める',
-                    variant: decided
-                        ? AppButtonVariant.secondary
-                        : AppButtonVariant.primary,
-                    onPressed: _openNextStep,
-                  ),
-                ],
+    return Column(
+      children: [
+        StepItem(
+          stepNumber: 1,
+          title: '次の一歩',
+          status: decided ? StepStatus.done : StepStatus.current,
+          isFirst: true,
+          description: decided
+              ? '${actions.length}個の一歩を、自分で決めました。'
+              : '理想の自分に近づくために、\n小さな一歩からやることを決めよう',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (decided)
+                NextStepSummary(actions: actions)
+              else
+                AppTextButton(
+                  label: '自分の軸を確認する',
+                  trailingIcon: AppIcons.chevronRight,
+                  onPressed: widget.onOpenAxis,
+                ),
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: decided ? '次の一歩を確認する' : '次の一歩を決める',
+                variant: decided
+                    ? AppButtonVariant.secondary
+                    : AppButtonVariant.primary,
+                onPressed: _openNextStep,
               ),
-            ),
-            StepItem(
-              stepNumber: 2,
-              title: '振り返り',
-              status: decided ? StepStatus.current : StepStatus.pending,
-              isLast: true,
-              description: '自分を振り返って、\n自分の軸を少しずつ育てよう',
-              child: AppButton(
-                label: '振り返る',
-                variant: AppButtonVariant.secondary,
-                onPressed: () {},
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+        StepItem(
+          stepNumber: 2,
+          title: '振り返り',
+          status: decided ? StepStatus.current : StepStatus.pending,
+          isLast: true,
+          description: '自分を振り返って、\n自分の軸を少しずつ育てよう',
+          child: AppButton(
+            label: '振り返る',
+            variant: AppButtonVariant.secondary,
+            onPressed: () {},
+          ),
+        ),
+      ],
     );
   }
 }
