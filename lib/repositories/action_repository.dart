@@ -94,6 +94,40 @@ class ActionRepository {
     await (_db.delete(_db.dailyActions)..where((t) => t.id.equals(id))).go();
   }
 
+  // ---------- あゆみ ----------
+
+  // 今日までに「できた」一歩の数（明日の予定は数えない）
+  Stream<int> watchDoneCount(DateTime today) {
+    final actions = _db.dailyActions;
+    final count = actions.id.count();
+
+    final query = _db.selectOnly(actions)
+      ..addColumns([count])
+      ..where(_doneUntil(today));
+
+    return query.map((row) => row.read(count)!).watchSingle();
+  }
+
+  // 今日までに「できた」一歩（新しい日から）。limit で数を絞れる
+  Stream<List<DailyAction>> watchDoneActions(DateTime today, {int? limit}) {
+    final query = _db.select(_db.dailyActions)
+      ..where((t) => _doneUntil(today))
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.targetDate),
+        (t) => OrderingTerm.desc(t.createdAt),
+        (t) => OrderingTerm.desc(t.rowId),
+      ]);
+    if (limit != null) query.limit(limit);
+
+    return query.watch();
+  }
+
+  Expression<bool> _doneUntil(DateTime today) {
+    final actions = _db.dailyActions;
+    return actions.status.equalsValue(ActionStatus.done) &
+        actions.targetDate.isSmallerOrEqualValue(DateRules.dateOnly(today));
+  }
+
   bool _isValid(String action, String reason) {
     return action.isNotEmpty &&
         action.length <= maxActionLength &&

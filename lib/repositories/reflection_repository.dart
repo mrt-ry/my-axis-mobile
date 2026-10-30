@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:drift/drift.dart';
 
 import '../data/database/app_database.dart';
+import '../models/emotion_count.dart';
+import '../models/past_reflection.dart';
 import '../models/reflection_entry_with_emotions.dart';
 import '../utils/date_rules.dart';
 
@@ -185,5 +189,157 @@ class ReflectionRepository {
           ),
         );
     return true;
+  }
+  // ---------- あゆみ ----------
+
+  // その月の、気持ちごとのできごとの数（多い順。同じ数なら一覧の並び順）
+  Stream<List<EmotionCount>> watchEmotionCounts(
+    DateTime month,
+    ReflectionKind kind,
+  ) {
+    final (start, end) = _monthRange(month);
+    final entries = _db.reflectionEntries;
+    final links = _db.reflectionEntryEmotions;
+    final emotions = _db.emotions;
+    final count = links.entryId.count();
+
+    final query =
+        _db.select(emotions).join([
+            innerJoin(
+              links,
+              links.emotionId.equalsExp(emotions.id),
+              useColumns: false,
+            ),
+            innerJoin(
+              entries,
+              entries.id.equalsExp(links.entryId),
+              useColumns: false,
+            ),
+          ])
+          ..addColumns([count])
+          ..where(
+            entries.targetDate.isBiggerOrEqualValue(start) &
+                entries.targetDate.isSmallerThanValue(end) &
+                entries.kind.equalsValue(kind),
+          )
+          ..groupBy([emotions.id])
+          ..orderBy([
+            OrderingTerm.desc(count),
+            OrderingTerm.asc(emotions.sortOrder),
+          ]);
+
+    return query.watch().map(
+      (rows) => [
+        for (final row in rows)
+          EmotionCount(
+            emotion: row.readTable(emotions),
+            count: row.read(count)!,
+          ),
+      ],
+    );
+  }
+
+  // その月に、ある気持ちをつけたできごと（新しい日から）
+  Stream<List<ReflectionEntry>> watchEntriesByEmotion(
+    DateTime month,
+    String emotionId,
+  ) {
+    final (start, end) = _monthRange(month);
+    final entries = _db.reflectionEntries;
+    final links = _db.reflectionEntryEmotions;
+
+    final query =
+        _db.select(entries).join([
+            innerJoin(
+              links,
+              links.entryId.equalsExp(entries.id),
+              useColumns: false,
+            ),
+          ])
+          ..where(
+            links.emotionId.equals(emotionId) &
+                entries.targetDate.isBiggerOrEqualValue(start) &
+                entries.targetDate.isSmallerThanValue(end),
+          )
+          ..orderBy([
+            OrderingTerm.desc(entries.targetDate),
+            OrderingTerm.asc(entries.createdAt),
+            OrderingTerm.asc(entries.rowId),
+          ]);
+
+    return query.watch().map(
+      (rows) => [for (final row in rows) row.readTable(entries)],
+    );
+  }
+
+  // 7日以上前の、できごと・気づきから1つを選ぶ（なければ null）
+  Future<PastReflection?> pickPastReflection(DateTime today) async {
+    final day = DateRules.dateOnly(today);
+    final cutoff = DateTime(day.year, day.month, day.day - 7);
+    final entries = _db.reflectionEntries;
+    final notes = _db.reflectionNotes;
+
+    final entryIds =
+        await (_db.selectOnly(entries)
+              ..addColumns([entries.id])
+              ..where(entries.targetDate.isSmallerOrEqualValue(cutoff)))
+            .map((row) => row.read(entries.id)!)
+            .get();
+    final noteIds =
+        await (_db.selectOnly(notes)
+              ..addColumns([notes.id])
+              ..where(notes.targetDate.isSmallerOrEqualValue(cutoff)))
+            .map((row) => row.read(notes.id)!)
+            .get();
+
+    final total = entryIds.length + noteIds.length;
+    if (total == 0) return null;
+
+    // できごとと気づきを1つの列に並べたと考えて、その中から1つ選ぶ
+    final index = Random().nextInt(total);
+    if (index < entryIds.length) {
+      return _pastEntry(entryIds[index]);
+    }
+
+    final note = await (_db.select(
+      notes,
+    )..where((t) => t.id.equals(noteIds[index - entryIds.length]))).getSingle();
+    return PastReflection(
+      targetDate: note.targetDate,
+      kind: null,
+      content: note.content,
+      emotions: const [],
+    );
+  }
+
+  Future<PastReflection> _pastEntry(String id) async {
+    final entries = _db.reflectionEntries;
+    final links = _db.reflectionEntryEmotions;
+    final emotions = _db.emotions;
+
+    final rows =
+        await (_db.select(entries).join([
+                leftOuterJoin(links, links.entryId.equalsExp(entries.id)),
+                leftOuterJoin(emotions, emotions.id.equalsExp(links.emotionId)),
+              ])
+              ..where(entries.id.equals(id))
+              ..orderBy([OrderingTerm.asc(emotions.sortOrder)]))
+            .get();
+
+    final entry = rows.first.readTable(entries);
+    return PastReflection(
+      targetDate: entry.targetDate,
+      kind: entry.kind,
+      content: entry.content,
+      emotions: [for (final row in rows) ?row.readTableOrNull(emotions)],
+    );
+  }
+
+  // その月の1日と、次の月の1日
+  (DateTime, DateTime) _monthRange(DateTime month) {
+    return (
+      DateTime(month.year, month.month),
+      DateTime(month.year, month.month + 1),
+    );
   }
 }
