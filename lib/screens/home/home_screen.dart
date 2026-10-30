@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/action_providers.dart';
+import '../../providers/reflection_providers.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
@@ -58,6 +59,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _openReflection() {
+    // 未来の日は、まだ振り返れない
+    if (_selectedDate.isAfter(_today)) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('明日になったら振り返れます。')));
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ReflectionScreen(date: _selectedDate),
@@ -104,7 +112,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       AsyncData(:final value) => value,
       _ => null, // 読み込み中・エラーの時は何も出さない
     };
-    if (actions == null) return const SizedBox.shrink();
+    final recorded = ref.watch(reflectionRecordedProvider(_selectedDate));
+    if (actions == null || recorded == null) return const SizedBox.shrink();
 
     final decided = actions.isNotEmpty; // 1つ以上、次の一歩を決めたらSTEP1が完了
 
@@ -143,11 +152,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         StepItem(
           stepNumber: 2,
           title: '振り返り',
-          status: decided ? StepStatus.current : StepStatus.pending,
+          status: recorded
+              ? StepStatus.done
+              : (decided ? StepStatus.current : StepStatus.pending),
+          description: recorded ? '振り返りました。' : '自分を振り返って、\n自分の軸を少しずつ育てよう',
           isLast: true,
-          description: '自分を振り返って、\n自分の軸を少しずつ育てよう',
           child: AppButton(
-            label: '振り返る',
+            label: recorded ? '振り返りを見る' : '振り返る',
             variant: AppButtonVariant.secondary,
             onPressed: _openReflection,
           ),
