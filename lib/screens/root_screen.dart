@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../repositories/action_repository.dart';
 import '../repositories/vision_repository.dart';
 import '../widgets/app_bottom_nav_bar.dart';
+import '../widgets/tab_navigator.dart';
 import 'axis/axis_screen.dart';
 import 'home/home_screen.dart';
 import 'journey/journey_screen.dart';
@@ -31,14 +32,16 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      HomeScreen(
-        actionRepository: widget.actionRepository,
-        visionRepository: widget.visionRepository,
-        onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
+      TabNavigator(
+        home: HomeScreen(
+          actionRepository: widget.actionRepository,
+          visionRepository: widget.visionRepository,
+          onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
+        ),
       ),
-      AxisScreen(repository: widget.visionRepository),
-      JourneyScreen(),
-      SettingsScreen(),
+      TabNavigator(home: AxisScreen(repository: widget.visionRepository)),
+      const TabNavigator(home: JourneyScreen()),
+      const TabNavigator(home: SettingsScreen()),
     ];
 
     return Scaffold(
