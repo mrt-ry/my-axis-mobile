@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
 import '../../../theme/app_typography.dart';
+import '../../../theme/calendar_colors.dart';
 import '../../../utils/date_labels.dart';
 import '../../../utils/date_rules.dart';
-import '../../../theme/calendar_colors.dart';
 
 class WeekStrip extends StatefulWidget {
   const WeekStrip({

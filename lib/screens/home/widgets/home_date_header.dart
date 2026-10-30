@@ -3,9 +3,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
+import '../../../theme/calendar_colors.dart';
 import '../../../utils/date_labels.dart';
 import '../../../utils/holiday_calendar.dart';
-import '../../../theme/calendar_colors.dart';
 
 class HomeDateHeader extends StatelessWidget {
   const HomeDateHeader({
