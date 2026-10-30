@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../repositories/action_repository.dart';
 import '../../repositories/vision_repository.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_rules.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_text_button.dart';
 import '../../widgets/section_title.dart';
 import '../next_step/next_step_screen.dart';
 import 'widgets/daily_message_section.dart';
@@ -98,21 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextButton(
+                        AppTextButton(
+                          label: '自分の軸を確認する',
+                          trailingIcon: AppIcons.chevronRight,
                           onPressed: widget.onOpenAxis,
-                          style: TextButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            minimumSize: const Size(0, 32),
-                            padding: EdgeInsets.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('自分の軸を確認する'),
-                              Icon(AppIcons.chevronRight, size: 20),
-                            ],
-                          ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         AppButton(label: '次の一歩を決める', onPressed: _openNextStep),

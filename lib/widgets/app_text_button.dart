@@ -26,6 +26,7 @@ class AppTextButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: const Size(48, 48),
+        padding: EdgeInsets.zero,
         foregroundColor: color,
         textStyle: AppTypography.labelMedium,
       ),
