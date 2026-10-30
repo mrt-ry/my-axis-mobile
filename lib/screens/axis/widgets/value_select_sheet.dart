@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../../providers/repository_providers.dart';
 import '../../../repositories/vision_repository.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
@@ -11,9 +13,13 @@ import '../../../widgets/selectable_value_chip.dart';
 
 Future<void> showValueSelectSheet(
   BuildContext context, {
-  required VisionRepository repository,
   required List<SelectedValue> current,
 }) async {
+  // Widgetの外のためrefがない。そのためcontextから探してrepositoryを取得
+  final repository = ProviderScope.containerOf(
+    context,
+    listen: false,
+  ).read(visionRepositoryProvider);
   final selection = _ValueSelection(repository: repository, current: current);
   await showAppBottomSheet<void>(
     context: context,

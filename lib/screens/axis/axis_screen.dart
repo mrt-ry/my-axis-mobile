@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/database/app_database.dart';
+import '../../providers/vision_providers.dart';
 import '../../repositories/vision_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
@@ -13,20 +14,14 @@ import '../../widgets/value_chip.dart';
 import 'widgets/ideal_edit_sheet.dart';
 import 'widgets/value_select_sheet.dart';
 
-class AxisScreen extends StatefulWidget {
-  const AxisScreen({super.key, required this.repository});
-
-  final VisionRepository repository;
+class AxisScreen extends ConsumerStatefulWidget {
+  const AxisScreen({super.key});
 
   @override
-  State<AxisScreen> createState() => _AxisScreenState();
+  ConsumerState<AxisScreen> createState() => _AxisScreenState();
 }
 
-class _AxisScreenState extends State<AxisScreen> {
-  late final Stream<List<Ideal>> _idealStream = widget.repository.watchIdeals();
-  late final Stream<List<SelectedValue>> _valueStream = widget.repository
-      .watchSelectedValues();
-
+class _AxisScreenState extends ConsumerState<AxisScreen> {
   void _addIdeal(int currentCount) {
     if (currentCount >= VisionRepository.maxIdeals) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +33,7 @@ class _AxisScreenState extends State<AxisScreen> {
       );
       return;
     }
-    showIdealEditSheet(context, repository: widget.repository);
+    showIdealEditSheet(context);
   }
 
   @override
@@ -90,89 +85,77 @@ class _AxisScreenState extends State<AxisScreen> {
   }
 
   Widget _buildIdeals() {
-    return StreamBuilder<List<Ideal>>(
-      stream: _idealStream,
-      builder: (context, snapshot) {
-        final ideals = snapshot.data;
-        if (ideals == null) return const SizedBox.shrink();
+    final ideals = switch (ref.watch(idealsProvider)) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    if (ideals == null) return const SizedBox.shrink();
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.screenHorizontalPadding,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (ideals.isEmpty)
-                const EmptyStateBox(
-                  message: 'どんな自分でありたいか、ひとつ書いてみませんか？',
-                  example: '例：家族と穏やかに過ごしている自分',
-                )
-              else
-                for (var i = 0; i < ideals.length; i++) ...[
-                  if (i > 0) const SizedBox(height: AppSpacing.sm),
-                  NumberedEditRow(
-                    number: i + 1,
-                    text: ideals[i].content,
-                    onEdit: () => showIdealEditSheet(
-                      context,
-                      repository: widget.repository,
-                      ideal: ideals[i],
-                    ),
-                  ),
-                ],
-              const SizedBox(height: AppSpacing.md),
-              AppButton(
-                label: '理想の状態を追加する',
-                variant: AppButtonVariant.secondary,
-                onPressed: () => _addIdeal(ideals.length),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontalPadding,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (ideals.isEmpty)
+            const EmptyStateBox(
+              message: 'どんな自分でありたいか、ひとつ書いてみませんか？',
+              example: '例：家族と穏やかに過ごしている自分',
+            )
+          else
+            for (var i = 0; i < ideals.length; i++) ...[
+              if (i > 0) const SizedBox(height: AppSpacing.sm),
+              NumberedEditRow(
+                number: i + 1,
+                text: ideals[i].content,
+                onEdit: () => showIdealEditSheet(context, ideal: ideals[i]),
               ),
             ],
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: '理想の状態を追加する',
+            variant: AppButtonVariant.secondary,
+            onPressed: () => _addIdeal(ideals.length),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
   Widget _buildValues() {
-    return StreamBuilder<List<SelectedValue>>(
-      stream: _valueStream,
-      builder: (context, snapshot) {
-        final values = snapshot.data;
-        if (values == null) return const SizedBox.shrink();
+    final values = switch (ref.watch(selectedValuesProvider)) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    if (values == null) return const SizedBox.shrink();
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.screenHorizontalPadding,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenHorizontalPadding,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (values.isEmpty)
+            const EmptyStateBox(
+              message: '大切にしたいことを、選んでみましょう。',
+              example: '例：挑戦、つながり、自由、成長、感謝',
+            )
+          else
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [for (final v in values) ValueChip(label: v.name)],
+            ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: values.isEmpty ? '価値観を選ぶ' : '編集する',
+            variant: AppButtonVariant.secondary,
+            onPressed: () => showValueSelectSheet(context, current: values),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (values.isEmpty)
-                const EmptyStateBox(
-                  message: '大切にしたいことを、選んでみましょう。',
-                  example: '例：挑戦、つながり、自由、成長、感謝',
-                )
-              else
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
-                  children: [for (final v in values) ValueChip(label: v.name)],
-                ),
-              const SizedBox(height: AppSpacing.md),
-              AppButton(
-                label: values.isEmpty ? '価値観を選ぶ' : '編集する',
-                variant: AppButtonVariant.secondary,
-                onPressed: () => showValueSelectSheet(
-                  context,
-                  repository: widget.repository,
-                  current: values,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

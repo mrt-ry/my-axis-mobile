@@ -1,38 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../data/database/app_database.dart';
-import '../../../../../repositories/vision_repository.dart';
-import '../../../../../theme/app_colors.dart';
-import '../../../../../theme/app_icons.dart';
-import '../../../../../theme/app_spacing.dart';
-import '../../../../../theme/app_typography.dart';
-import '../../../../../widgets/app_bottom_sheet.dart';
-import '../../../../../widgets/app_button.dart';
-import '../../../../../widgets/app_text_field.dart';
+import '../../../data/database/app_database.dart';
+import '../../../providers/repository_providers.dart';
+import '../../../repositories/vision_repository.dart';
+import '../../../theme/app_colors.dart';
+import '../../../theme/app_icons.dart';
+import '../../../theme/app_spacing.dart';
+import '../../../theme/app_typography.dart';
+import '../../../widgets/app_bottom_sheet.dart';
+import '../../../widgets/app_button.dart';
+import '../../../widgets/app_text_field.dart';
 
-Future<void> showIdealEditSheet(
-  BuildContext context, {
-  required VisionRepository repository,
-  Ideal? ideal,
-}) {
+Future<void> showIdealEditSheet(BuildContext context, {Ideal? ideal}) {
   return showAppBottomSheet(
     context: context,
     title: ideal == null ? '理想の状態を追加' : '理想の状態を編集',
-    child: _IdealEditForm(repository: repository, ideal: ideal),
+    child: _IdealEditForm(ideal: ideal),
   );
 }
 
-class _IdealEditForm extends StatefulWidget {
-  const _IdealEditForm({required this.repository, this.ideal});
+class _IdealEditForm extends ConsumerStatefulWidget {
+  const _IdealEditForm({this.ideal});
 
-  final VisionRepository repository;
   final Ideal? ideal;
 
   @override
-  State<_IdealEditForm> createState() => _IdealEditFormState();
+  ConsumerState<_IdealEditForm> createState() => _IdealEditFormState();
 }
 
-class _IdealEditFormState extends State<_IdealEditForm> {
+class _IdealEditFormState extends ConsumerState<_IdealEditForm> {
   late final TextEditingController _controller = TextEditingController(
     text: widget.ideal?.content,
   );
@@ -57,10 +54,11 @@ class _IdealEditFormState extends State<_IdealEditForm> {
     }
 
     setState(() => _saving = true);
-    
+
+    final repository = ref.read(visionRepositoryProvider);
     final saved = _isEditing
-        ? await widget.repository.updateIdeal(widget.ideal!.id, text)
-        : await widget.repository.addIdeal(text);
+        ? await repository.updateIdeal(widget.ideal!.id, text)
+        : await repository.addIdeal(text);
     if (!mounted) return;
 
     if (!saved) {
@@ -96,7 +94,7 @@ class _IdealEditFormState extends State<_IdealEditForm> {
     );
     if (confirmed != true || !mounted) return;
 
-    await widget.repository.deleteIdeal(widget.ideal!.id);
+    await ref.read(visionRepositoryProvider).deleteIdeal(widget.ideal!.id);
     if (!mounted) return;
     Navigator.of(context).pop();
   }

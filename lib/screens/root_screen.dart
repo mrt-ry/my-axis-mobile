@@ -37,7 +37,7 @@ class _RootScreenState extends State<RootScreen> {
           onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
         ),
       ),
-      TabNavigator(home: AxisScreen(repository: widget.visionRepository)),
+      const TabNavigator(home: AxisScreen()),
       const TabNavigator(home: JourneyScreen()),
       const TabNavigator(home: SettingsScreen()),
     ];
