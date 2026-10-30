@@ -13,6 +13,7 @@ import 'widgets/action_result_card.dart';
 import 'widgets/action_result_sheet.dart';
 import 'widgets/reflection_entry_card.dart';
 import 'widgets/reflection_entry_sheet.dart';
+import 'widgets/reflection_note_field.dart';
 import 'widgets/reflection_section_header.dart';
 
 class ReflectionScreen extends ConsumerWidget {
@@ -58,6 +59,14 @@ class ReflectionScreen extends ConsumerWidget {
             _buildEntries(context, ref, ReflectionKind.good),
             const SizedBox(height: AppSpacing.xxl),
             _buildEntries(context, ref, ReflectionKind.discomfort),
+            const SizedBox(height: AppSpacing.xxl),
+            const ReflectionSectionHeader(
+              number: 4,
+              title: '気づき',
+              prompt: '今日をふりかえって、気づいたことを自由に。',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            ReflectionNoteField(date: date),
           ],
         ),
       ),
