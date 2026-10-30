@@ -21,11 +21,11 @@ class EmptyStateBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
-      options: RoundedRectDottedBorderOptions(
-        radius: const Radius.circular(AppRadius.card),
+      options: const RoundedRectDottedBorderOptions(
+        radius: Radius.circular(AppRadius.card),
         color: AppColors.textHint,
         strokeWidth: 1.5,
-        dashPattern: const [6, 4],
+        dashPattern: [6, 4],
         padding: EdgeInsets.zero,
       ),
       child: Container(

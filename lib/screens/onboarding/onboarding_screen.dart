@@ -132,7 +132,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ],
         ),
       ),
-      OnboardingPage(
+      const OnboardingPage(
         pageNumber: 3,
         pageCount: _pageCount,
         title: '自分を知り、\n小さな一歩を重ねる。',
@@ -157,7 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ],
         ),
       ),
-      OnboardingPage(
+      const OnboardingPage(
         pageNumber: 4,
         pageCount: _pageCount,
         photoLabel: '写真：朝の窓辺の机、開いたノートとペン',

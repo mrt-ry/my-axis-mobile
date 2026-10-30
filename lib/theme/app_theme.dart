@@ -25,7 +25,7 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       fontFamily: 'NotoSansJP',
       textTheme:
-          TextTheme(
+          const TextTheme(
             headlineLarge: AppTypography.headlineLarge,
             headlineMedium: AppTypography.headlineMedium,
             headlineSmall: AppTypography.headlineSmall,

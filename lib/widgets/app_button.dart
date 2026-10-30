@@ -89,7 +89,7 @@ class AppButton extends StatelessWidget {
 
   ButtonStyle _secondaryStyle() {
     return ButtonStyle(
-      minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
+      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(48)),
       shape: WidgetStatePropertyAll(_shape),
       textStyle: const WidgetStatePropertyAll(AppTypography.labelMedium),
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),

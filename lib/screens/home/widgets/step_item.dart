@@ -125,7 +125,7 @@ class _StepMarker extends StatelessWidget {
         border: Border.all(color: borderColor, width: 1.5),
       ),
       child: isDone
-          ? Icon(AppIcons.check, size: 18, color: AppColors.onPrimaryTint)
+          ? const Icon(AppIcons.check, size: 18, color: AppColors.onPrimaryTint)
           : isCurrent
           ? Container(
               width: 10,
