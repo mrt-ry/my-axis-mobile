@@ -16,4 +16,7 @@ abstract final class AppIcons {
   static const IconData editNote = Symbols.edit_note_rounded;
   static const IconData close = Symbols.close_rounded;
   static const IconData delete = Symbols.delete_rounded;
+  static const IconData statusDone = Symbols.check_circle_rounded;
+  static const IconData statusNotDone = Symbols.do_not_disturb_on_rounded;
+  static const IconData statusUnanswered = Symbols.circle_rounded;
 }

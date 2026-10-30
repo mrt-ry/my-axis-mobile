@@ -9,6 +9,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/app_text_button.dart';
 import '../../widgets/section_title.dart';
 import '../next_step/next_step_screen.dart';
+import '../reflection/reflection_screen.dart';
 import 'widgets/daily_message_section.dart';
 import 'widgets/home_date_header.dart';
 import 'widgets/next_step_summary.dart';
@@ -52,6 +53,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       MaterialPageRoute(
         builder: (context) =>
             NextStepScreen(date: _selectedDate, onOpenAxis: widget.onOpenAxis),
+      ),
+    );
+  }
+
+  void _openReflection() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ReflectionScreen(date: _selectedDate),
       ),
     );
   }
@@ -140,7 +149,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: AppButton(
             label: '振り返る',
             variant: AppButtonVariant.secondary,
-            onPressed: () {},
+            onPressed: _openReflection,
           ),
         ),
       ],

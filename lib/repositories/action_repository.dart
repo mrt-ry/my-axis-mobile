@@ -11,6 +11,7 @@ class ActionRepository {
 
   static const maxActionsPerDay = 10;
   static const maxActionLength = 50;
+  static const maxResultNoteLength = 50;
   static const maxReasonLength = 100;
 
   // 登録順で一覧取得
@@ -70,11 +71,13 @@ class ActionRepository {
   }
 
   // 実施状況と一言の更新
-  Future<void> updateStatus(
+  Future<bool> updateStatus(
     String id,
     ActionStatus status, {
     String resultNote = '',
   }) async {
+    if (resultNote.trim().length > maxResultNoteLength) return false;
+
     await (_db.update(_db.dailyActions)..where((t) => t.id.equals(id))).write(
       DailyActionsCompanion(
         status: Value(status),
@@ -82,6 +85,8 @@ class ActionRepository {
         updatedAt: Value(DateTime.now()),
       ),
     );
+
+    return true;
   }
 
   // 削除
