@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
-import 'data/database/app_database.dart';
-import 'repositories/action_repository.dart';
-import 'repositories/settings_repository.dart';
-import 'repositories/vision_repository.dart';
+import 'providers/repository_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database = AppDatabase();
-  final settingsRepository = SettingsRepository(database);
-  final onboardingCompleted = await settingsRepository.isOnboardingCompleted();
+  /// runAppの前に設定を読み込むため、providerの入れ物を先に作成
+  final container = ProviderContainer();
+  final onboardingCompleted = await container
+      .read(settingsRepositoryProvider)
+      .isOnboardingCompleted();
 
   runApp(
-    App(
-      settingsRepository: settingsRepository,
-      visionRepository: VisionRepository(database),
-      actionRepository: ActionRepository(database),
-      showOnboarding: !onboardingCompleted,
+    UncontrolledProviderScope(
+      container: container,
+      child: App(
+        settingsRepository: container.read(settingsRepositoryProvider),
+        visionRepository: container.read(visionRepositoryProvider),
+        actionRepository: container.read(actionRepositoryProvider),
+        showOnboarding: !onboardingCompleted,
+      ),
     ),
   );
 }
