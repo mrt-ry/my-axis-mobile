@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/database/app_database.dart';
 import '../repositories/action_repository.dart';
+import '../repositories/reflection_repository.dart';
 import '../repositories/settings_repository.dart';
 import '../repositories/vision_repository.dart';
 
@@ -22,4 +23,8 @@ final visionRepositoryProvider = Provider<VisionRepository>((ref) {
 
 final actionRepositoryProvider = Provider<ActionRepository>((ref) {
   return ActionRepository(ref.watch(databaseProvider));
+});
+
+final reflectionRepositoryProvider = Provider<ReflectionRepository>((ref) {
+  return ReflectionRepository(ref.watch(databaseProvider));
 });
