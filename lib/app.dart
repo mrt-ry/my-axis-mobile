@@ -18,7 +18,9 @@ class App extends StatelessWidget {
       locale: const Locale('ja'),
       supportedLocales: const [Locale('ja')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: showOnboarding ? const OnboardingScreen() : const RootScreen(),
+      home: showOnboarding
+          ? const OnboardingScreen(isReview: false)
+          : const RootScreen(),
     );
   }
 }

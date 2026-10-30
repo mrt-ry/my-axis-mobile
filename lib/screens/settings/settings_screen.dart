@@ -5,6 +5,7 @@ import '../../providers/app_info_providers.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
+import '../onboarding/onboarding_screen.dart';
 import 'storage_info_screen.dart';
 import 'widgets/settings_group.dart';
 
@@ -36,6 +37,23 @@ class SettingsScreen extends ConsumerWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            SettingsGroup(
+              title: 'このアプリについて',
+              rows: [
+                SettingsRow(
+                  label: 'はじめの説明をもう一度見る',
+                  // 写真を画面いっぱいに出すため、下のナビゲーションの上に重ねて開く
+                  onTap: () => Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) =>
+                          const OnboardingScreen(isReview: true),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.xl),
             SettingsGroup(

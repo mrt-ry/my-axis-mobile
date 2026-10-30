@@ -13,7 +13,10 @@ import 'widgets/onboarding_page.dart';
 import 'widgets/onboarding_parts.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, required this.isReview});
+
+  // 設定から見返すときはtrue（済みの記録はせず、閉じるだけ）
+  final bool isReview;
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -62,33 +65,57 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  void _close() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        top: false, // 写真を画面上部まで広げるため
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                onPageChanged: (page) => setState(() {
-                  _currentPage = page;
-                }),
-                children: _buildPages(),
+      body: Stack(
+        children: [
+          SafeArea(
+            top: false, // 写真を画面上部まで広げるため
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    controller: _controller,
+                    onPageChanged: (page) => setState(() {
+                      _currentPage = page;
+                    }),
+                    children: _buildPages(),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.screenHorizontalPadding,
+                    AppSpacing.sm,
+                    AppSpacing.screenHorizontalPadding,
+                    AppSpacing.lg,
+                  ),
+                  child: _isLastPage ? _buildLastFooter() : _buildFooter(),
+                ),
+              ],
+            ),
+          ),
+          // 見返すときは、どのページからでも閉じられるようにする
+          if (widget.isReview)
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  child: IconButton(
+                    onPressed: _close,
+                    tooltip: '閉じる',
+                    icon: const Icon(AppIcons.close),
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenHorizontalPadding,
-                AppSpacing.sm,
-                AppSpacing.screenHorizontalPadding,
-                AppSpacing.lg,
-              ),
-              child: _isLastPage ? _buildLastFooter() : _buildFooter(),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -190,6 +217,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Widget _buildLastFooter() {
+    if (widget.isReview) return _buildReviewLastFooter();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -212,6 +241,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               onPressed: _isSaving ? null : () => _finish(_homeTabIndex),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  // 見返すときの最後のページ（書き始めるボタンの代わりに「閉じる」）
+  Widget _buildReviewLastFooter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppButton(label: '閉じる', onPressed: _close),
+        const SizedBox(height: AppSpacing.sm),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: AppTextButton(
+            label: '戻る',
+            leadingIcon: AppIcons.chevronLeft,
+            onPressed: _goBack,
+          ),
         ),
       ],
     );
