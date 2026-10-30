@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../repositories/action_repository.dart';
-import '../../repositories/settings_repository.dart';
-import '../../repositories/vision_repository.dart';
+import '../../providers/repository_providers.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
@@ -13,23 +12,14 @@ import '../root_screen.dart';
 import 'widgets/onboarding_page.dart';
 import 'widgets/onboarding_parts.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({
-    super.key,
-    required this.settingsRepository,
-    required this.visionRepository,
-    required this.actionRepository,
-  });
-
-  final SettingsRepository settingsRepository;
-  final VisionRepository visionRepository;
-  final ActionRepository actionRepository;
+class OnboardingScreen extends ConsumerStatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _pageCount = 4;
   static const _homeTabIndex = 0;
   static const _axisTabIndex = 1;
@@ -62,16 +52,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _finish(int tabIndex) async {
     setState(() => _isSaving = true);
-    await widget.settingsRepository.completeOnboarding();
+    await ref.read(settingsRepositoryProvider).completeOnboarding();
     if (!mounted) return;
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => RootScreen(
-          visionRepository: widget.visionRepository,
-          actionRepository: widget.actionRepository,
-          initialIndex: tabIndex,
-        ),
+        builder: (context) => RootScreen(initialIndex: tabIndex),
       ),
     );
   }
