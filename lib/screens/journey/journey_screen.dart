@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
-import 'widgets/done_step_section.dart';
+import 'widgets/done_steps_section.dart';
 import 'widgets/emotion_trend_section.dart';
 
 class JourneyScreen extends StatelessWidget {
