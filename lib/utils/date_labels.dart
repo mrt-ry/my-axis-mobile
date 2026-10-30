@@ -8,4 +8,6 @@ abstract final class DateLabels {
   static String weekdayParen(DateTime date) => '(${weekday(date)})';
 
   static String monthDay(DateTime date) => '${date.month}月${date.day}日';
+
+  static String yearMonth(DateTime date) => '${date.year}年${date.month}月';
 }

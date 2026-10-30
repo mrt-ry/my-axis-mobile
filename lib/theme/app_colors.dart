@@ -42,6 +42,10 @@ abstract final class AppColors {
   static const Color saturday = Color(0xFF3B6FB6);
   static const Color sunday = Color(0xFFC9403A);
 
+  // あゆみ
+  static const Color emotionGood = Color(0xFFA8C7A0);
+  static const Color emotionDiscomfort = Color(0xFF789EC8);
+
   // 今日のことば
   static const Color messageBackground = Color(0xFFEDF2F8);
   static const Color messageText = Color(0xFF333B36);
