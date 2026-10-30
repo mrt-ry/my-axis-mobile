@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/database/app_database.dart';
+import '../../providers/action_providers.dart';
+import '../../providers/repository_providers.dart';
 import '../../repositories/action_repository.dart';
-import '../../repositories/vision_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_icons.dart';
 import '../../theme/app_spacing.dart';
@@ -16,31 +18,25 @@ import 'widgets/ideal_quote.dart';
 import 'widgets/next_step_edit_sheet.dart';
 import 'widgets/next_step_row.dart';
 
-class NextStepScreen extends StatefulWidget {
+class NextStepScreen extends ConsumerStatefulWidget {
   const NextStepScreen({
     super.key,
-    required this.actionRepository,
-    required this.visionRepository,
     required this.date,
     required this.onOpenAxis,
   });
 
-  final ActionRepository actionRepository;
-  final VisionRepository visionRepository;
   final DateTime date;
   final VoidCallback onOpenAxis;
 
   @override
-  State<NextStepScreen> createState() => _NextStepScreenState();
+  ConsumerState<NextStepScreen> createState() => _NextStepScreenState();
 }
 
-class _NextStepScreenState extends State<NextStepScreen> {
-  late final Stream<List<DailyAction>> _actionStream = widget.actionRepository
-      .watchActionsByDate(widget.date);
+class _NextStepScreenState extends ConsumerState<NextStepScreen> {
   late final Future<String?> _idealText = _pickIdeal();
 
   Future<String?> _pickIdeal() async {
-    final ideals = await widget.visionRepository.watchIdeals().first;
+    final ideals = await ref.read(visionRepositoryProvider).watchIdeals().first;
     if (ideals.isEmpty) return null;
     return ideals[Random().nextInt(ideals.length)].content;
   }
@@ -64,12 +60,7 @@ class _NextStepScreenState extends State<NextStepScreen> {
   }
 
   void _openSheet([DailyAction? action]) {
-    showNextStepEditSheet(
-      context,
-      repository: widget.actionRepository,
-      date: widget.date,
-      action: action,
-    );
+    showNextStepEditSheet(context, date: widget.date, action: action);
   }
 
   @override
@@ -136,51 +127,49 @@ class _NextStepScreenState extends State<NextStepScreen> {
   }
 
   Widget _buildActions() {
-    return StreamBuilder<List<DailyAction>>(
-      stream: _actionStream,
-      builder: (context, snapshot) {
-        final actions = snapshot.data;
-        if (actions == null) return const SizedBox.shrink();
+    final actions = switch (ref.watch(actionsByDateProvider(widget.date))) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    if (actions == null) return const SizedBox.shrink();
 
-        if (actions.isEmpty) {
-          return _EmptyNextStep(onAdd: () => _addAction(0));
-        }
+    if (actions.isEmpty) {
+      return _EmptyNextStep(onAdd: () => _addAction(0));
+    }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppColors.border)),
-              ),
-              child: Column(
-                children: [
-                  for (var i = 0; i < actions.length; i++)
-                    NextStepRow(
-                      number: i + 1,
-                      action: actions[i].action,
-                      reason: actions[i].reason,
-                      onEdit: () => _openSheet(actions[i]),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            AppTextButton(
-              label: '一歩を加える',
-              leadingIcon: AppIcons.add,
-              onPressed: () => _addAction(actions.length),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              'どれも、あなたが自分で選んだ一歩です。',
-              style: AppTypography.emotionalMedium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: AppColors.border)),
+          ),
+          child: Column(
+            children: [
+              for (var i = 0; i < actions.length; i++)
+                NextStepRow(
+                  number: i + 1,
+                  action: actions[i].action,
+                  reason: actions[i].reason,
+                  onEdit: () => _openSheet(actions[i]),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppTextButton(
+          label: '一歩を加える',
+          leadingIcon: AppIcons.add,
+          onPressed: () => _addAction(actions.length),
+        ),
+        const SizedBox(height: AppSpacing.xl),
+        Text(
+          'どれも、あなたが自分で選んだ一歩です。',
+          style: AppTypography.emotionalMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -62,12 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openNextStep() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => NextStepScreen(
-          actionRepository: widget.actionRepository,
-          visionRepository: widget.visionRepository,
-          date: _selectedDate,
-          onOpenAxis: widget.onOpenAxis,
-        ),
+        builder: (context) =>
+            NextStepScreen(date: _selectedDate, onOpenAxis: widget.onOpenAxis),
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../../providers/repository_providers.dart';
 import '../../../repositories/action_repository.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_icons.dart';
@@ -13,37 +15,27 @@ import '../../../widgets/app_text_field.dart';
 
 Future<void> showNextStepEditSheet(
   BuildContext context, {
-  required ActionRepository repository,
   required DateTime date,
   DailyAction? action,
 }) {
   return showAppBottomSheet(
     context: context,
     title: action == null ? '一歩を加える' : '一歩を書き直す',
-    child: _NextStepEditForm(
-      repository: repository,
-      date: date,
-      action: action,
-    ),
+    child: _NextStepEditForm(date: date, action: action),
   );
 }
 
-class _NextStepEditForm extends StatefulWidget {
-  const _NextStepEditForm({
-    required this.repository,
-    required this.date,
-    this.action,
-  });
+class _NextStepEditForm extends ConsumerStatefulWidget {
+  const _NextStepEditForm({required this.date, this.action});
 
-  final ActionRepository repository;
   final DateTime date;
   final DailyAction? action;
 
   @override
-  State<_NextStepEditForm> createState() => _NextStepEditFormState();
+  ConsumerState<_NextStepEditForm> createState() => _NextStepEditFormState();
 }
 
-class _NextStepEditFormState extends State<_NextStepEditForm> {
+class _NextStepEditFormState extends ConsumerState<_NextStepEditForm> {
   late final _actionController = TextEditingController(
     text: widget.action?.action,
   );
@@ -71,18 +63,11 @@ class _NextStepEditFormState extends State<_NextStepEditForm> {
 
     setState(() => _saving = true);
 
+    final repository = ref.read(actionRepositoryProvider);
     final reason = _reasonController.text;
     final saved = _isEditing
-        ? await widget.repository.updateAction(
-            widget.action!.id,
-            action,
-            reason,
-          )
-        : await widget.repository.addAction(
-            widget.date,
-            action,
-            reason: reason,
-          );
+        ? await repository.updateAction(widget.action!.id, action, reason)
+        : await repository.addAction(widget.date, action, reason: reason);
     if (!mounted) return;
 
     if (!saved) {
@@ -117,7 +102,7 @@ class _NextStepEditFormState extends State<_NextStepEditForm> {
     );
     if (confirmed != true || !mounted) return;
 
-    await widget.repository.deleteAction(widget.action!.id);
+    await ref.read(actionRepositoryProvider).deleteAction(widget.action!.id);
     if (!mounted) return;
     Navigator.of(context).pop();
   }
