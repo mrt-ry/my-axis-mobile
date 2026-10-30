@@ -19,27 +19,43 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   late int _currentIndex = widget.initialIndex;
   static const _axisTabIndex = 1;
+  // タブごとの画面の積み重ねの鍵（ホーム・自分の軸・あゆみ・設定）
+  final _navigatorKeys = List.generate(4, (_) => GlobalKey<NavigatorState>());
+
+  void _onTabTap(int index) {
+    // 開いているタブをもう一度押したら、そのタブの最初の画面に戻る
+    if (index == _currentIndex) {
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+      return;
+    }
+    setState(() => _currentIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
     final screens = [
       TabNavigator(
+        navigatorKey: _navigatorKeys[0],
         home: HomeScreen(
           onOpenAxis: () => setState(() => _currentIndex = _axisTabIndex),
         ),
       ),
-      const TabNavigator(home: AxisScreen()),
-      const TabNavigator(home: JourneyScreen()),
-      const TabNavigator(home: SettingsScreen()),
+      TabNavigator(navigatorKey: _navigatorKeys[1], home: const AxisScreen()),
+      TabNavigator(
+        navigatorKey: _navigatorKeys[2],
+        home: const JourneyScreen(),
+      ),
+      TabNavigator(
+        navigatorKey: _navigatorKeys[3],
+        home: const SettingsScreen(),
+      ),
     ];
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: screens),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() {
-          _currentIndex = index;
-        }),
+        onTap: _onTabTap,
       ),
     );
   }
