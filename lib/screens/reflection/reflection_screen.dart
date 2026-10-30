@@ -54,7 +54,6 @@ class ReflectionScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xxl),
             _buildActions(context, ref),
-            // ここから追加
             const SizedBox(height: AppSpacing.xxl),
             _buildEntries(context, ref, ReflectionKind.good),
             const SizedBox(height: AppSpacing.xxl),
