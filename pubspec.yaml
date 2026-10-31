@@ -44,6 +44,7 @@ dependencies:
   dotted_border: ^3.1.0
   flutter_riverpod: ^3.4.3
   package_info_plus: ^10.2.2
+  firebase_core: ^5.1.0
 
 dev_dependencies:
   flutter_test:
