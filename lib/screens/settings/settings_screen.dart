@@ -1,10 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/app_info_providers.dart';
+import '../../providers/repository_providers.dart';
+import '../../repositories/ai_hint_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
+import '../../utils/date_rules.dart';
 import '../onboarding/onboarding_screen.dart';
 import 'storage_info_screen.dart';
 import 'widgets/settings_group.dart';
@@ -74,6 +78,23 @@ class SettingsScreen extends ConsumerWidget {
               title: 'アプリの情報',
               rows: [SettingsRow(label: 'バージョン', value: version)],
             ),
+            if (kDebugMode)
+              TextButton(
+                onPressed: () async {
+                  try {
+                    final hint = await ref
+                        .read(aiHintRepositoryProvider)
+                        .requestHint(DateRules.today());
+                    debugPrint('見えたこと：${hint.observation}');
+                    debugPrint(
+                      '問い：${hint.question}／心配：${hint.concern}／残り：${hint.remaining}',
+                    );
+                  } on AiHintException catch (e) {
+                    debugPrint('受け取れませんでした：${e.error}');
+                  }
+                },
+                child: const Text('AIのテスト（開発用）'),
+              ),
           ],
         ),
       ),
